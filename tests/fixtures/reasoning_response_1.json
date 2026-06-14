@@ -1,7 +1,7 @@
 {
-  "precio_min": 30,
-  "precio_max": 80,
-  "punto_medio": 55,
-  "desviacion_significativa": true,
-  "justificacion": "El precio de 5000 USD por unidad para un taladro eléctrico inalámbrico de 18V es extremadamente alto. En el mercado internacional, estos taladros suelen costar entre 30 y 80 USD dependiendo de la marca y calidad. Un precio de 5000 USD representa una desviación de más del 9000% respecto al punto medio del rango estimado, lo cual es altamente sospechoso y consistente con sobrefacturación en TBML."
+  "min_price": 30,
+  "max_price": 80,
+  "midpoint": 55,
+  "significant_deviation": true,
+  "justification": "The price of 5,000 USD per unit for a cordless 18V electric drill is extremely high. In the international market, these drills typically cost between 30 and 80 USD depending on brand and quality. A price of 5,000 USD represents a deviation of over 9,000% from the midpoint of the estimated range, which is highly suspicious and consistent with TBML over-invoicing."
 }

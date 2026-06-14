@@ -47,9 +47,9 @@ class Config:
     paths: PathsConfig = field(default_factory=PathsConfig)
     extraction: ExtractionConfig = field(default_factory=ExtractionConfig)
     category_vocabulary: List[str] = field(default_factory=lambda: [
-        "Electrónica", "Materiales de construcción", "Textiles",
-        "Maquinaria", "Alimentos", "Químicos",
-        "Vehículos/Repuestos", "Otro",
+        "Electronics", "Construction Materials", "Textiles",
+        "Industrial Machinery", "Food & Beverage", "Chemicals",
+        "Automotive & Spare Parts", "Other",
     ])
     database: DatabaseConfig = field(default_factory=DatabaseConfig)
 

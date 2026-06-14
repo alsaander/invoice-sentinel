@@ -17,7 +17,7 @@ def test_load_config_defaults_when_no_file():
             assert cfg.thresholds.normal_upper == 100
             assert cfg.thresholds.moderate_upper == 200
             assert cfg.extraction.min_text_chars == 50
-            assert "Electrónica" in cfg.category_vocabulary
+            assert "Electronics" in cfg.category_vocabulary
             assert cfg.database.path == "invoicesentinel.db"
         finally:
             os.chdir(orig)
@@ -29,7 +29,7 @@ def test_load_config_from_yaml():
         "thresholds": {"normal_upper": 80, "moderate_upper": 150},
         "paths": {"inbox": "/custom/inbox"},
         "extraction": {"min_text_chars": 100},
-        "category_vocabulary": ["Electrónica", "Otro"],
+        "category_vocabulary": ["Electronics", "Other"],
         "database": {"path": "/data/db.sqlite"},
     }
     with tempfile.TemporaryDirectory() as tmp:
@@ -43,7 +43,7 @@ def test_load_config_from_yaml():
         assert cfg.thresholds.moderate_upper == 150
         assert cfg.paths.inbox == "/custom/inbox"
         assert cfg.extraction.min_text_chars == 100
-        assert cfg.category_vocabulary == ["Electrónica", "Otro"]
+        assert cfg.category_vocabulary == ["Electronics", "Other"]
         assert cfg.database.path == "/data/db.sqlite"
 
 
@@ -68,9 +68,9 @@ def test_validate_thresholds_are_ints():
 def test_category_vocabulary_contains_all_required():
     cfg = Config()
     required = [
-        "Electrónica", "Materiales de construcción", "Textiles",
-        "Maquinaria", "Alimentos", "Químicos",
-        "Vehículos/Repuestos", "Otro",
+        "Electronics", "Construction Materials", "Textiles",
+        "Industrial Machinery", "Food & Beverage", "Chemicals",
+        "Automotive & Spare Parts", "Other",
     ]
     for cat in required:
         assert cat in cfg.category_vocabulary, f"Missing category: {cat}"

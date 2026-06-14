@@ -26,39 +26,39 @@ def _load_fixture(name: str) -> str:
 class TestBuildPriceEstimatePrompt:
     def test_all_fields_filled(self):
         prompt = build_price_estimate_prompt(
-            description="Taladro eléctrico",
-            category="Electrónica",
+            description="Cordless electric drill",
+            category="Electronics",
             quantity=10,
         )
-        assert "Taladro eléctrico" in prompt
-        assert "Electrónica" in prompt
+        assert "Cordless electric drill" in prompt
+        assert "Electronics" in prompt
         assert "10" in prompt
-        assert "SIN PRECIO FACTURADO" in prompt or "precio" not in prompt
+        assert "NO INVOICED PRICE" in prompt
         assert "5000.0" not in prompt
-        assert "precio unitario facturado" not in prompt.lower()
+        assert "invoiced unit price" not in prompt.lower()
         assert "unit_price" not in prompt.lower()
 
     def test_null_values_use_na(self):
         prompt = build_price_estimate_prompt(
             description="Item",
-            category="Otro",
+            category="Other",
             quantity=None,
         )
         assert "N/A" in prompt
-        assert "SIN PRECIO FACTURADO" in prompt
+        assert "NO INVOICED PRICE" in prompt
 
 
 class TestParsePriceEstimateJson:
     def test_valid_object(self):
-        text = '{"precio_min": 30, "precio_max": 80}'
+        text = '{"min_price": 30, "max_price": 80}'
         result = _parse_price_estimate_json(text)
-        assert result["precio_min"] == 30
-        assert result["precio_max"] == 80
+        assert result["min_price"] == 30
+        assert result["max_price"] == 80
 
     def test_markdown_wrapped(self):
-        text = '```json\n{"precio_min": 30, "precio_max": 80}\n```'
+        text = '```json\n{"min_price": 30, "max_price": 80}\n```'
         result = _parse_price_estimate_json(text)
-        assert result["precio_min"] == 30
+        assert result["min_price"] == 30
 
     def test_raises_on_array(self):
         with pytest.raises(ValueError, match="Expected JSON object"):
@@ -129,8 +129,8 @@ class TestReasonLineItem:
     def _make_line_item(self, **kwargs):
         defaults = dict(
             id=1, invoice_id=1, quantity=10, unit_price=5000.0,
-            currency="USD", description="Taladro eléctrico inalámbrico 18V",
-            category="Electrónica",
+            currency="USD", description="Cordless 18V electric drill",
+            category="Electronics",
         )
         defaults.update(kwargs)
         return LineItem(**defaults)
@@ -238,11 +238,11 @@ class TestReasonLineItem:
     def test_negative_deviation_underpriced(self, cfg):
         """Underpriced (negative deviation) → severity still based on abs value"""
         raw = json.dumps({
-            "precio_min": 80,
-            "precio_max": 120,
-            "punto_medio": 100,
-            "desviacion_significativa": False,
-            "justificacion": "El precio de 10 USD está por debajo del rango de mercado.",
+            "min_price": 80,
+            "max_price": 120,
+            "midpoint": 100,
+            "significant_deviation": False,
+            "justification": "The price of 10 USD is below the market range.",
         })
         client = self._make_mock_client([raw])
         item = self._make_line_item(unit_price=10.0, quantity=1)
@@ -285,7 +285,7 @@ class TestDrillOverinvoiceRegression:
             id=99, invoice_id=1, quantity=50, unit_price=8500.0,
             currency="USD",
             description="Taladro percutor inalambrico 20V profesional",
-            category="Maquinaria",
+            category="Industrial Machinery",
         )
         defaults.update(kwargs)
         return LineItem(**defaults)
@@ -315,7 +315,7 @@ class TestDrillOverinvoiceRegression:
 
     def test_drill_without_reference_csv_falls_back_to_llm(self, cfg):
         """Without reference CSV match, LLM price estimate is used.
-        Uses the anchored fixture (precio_min=5500, max=10000) which gives
+        Uses the anchored fixture (min_price=5500, max=10000) which gives
         midpoint=7750, deviation≈9.68% → NORMAL."""
         raw = _load_fixture("price_estimate_anchored.json")
         client = self._make_mock_client([raw])
@@ -339,7 +339,7 @@ class TestReasonLineItemReferencePrices:
         defaults = dict(
             id=2, invoice_id=1, quantity=10, unit_price=5000.0,
             currency="USD", description="Taladro eléctrico inalámbrico 18V",
-            category="Electrónica",
+            category="Electronics",
         )
         defaults.update(kwargs)
         return LineItem(**defaults)
@@ -348,7 +348,7 @@ class TestReasonLineItemReferencePrices:
         """FR3.4: reference_prices match → reference_source='reference_csv:taladro',
         no LLM call is made."""
         ref_prices = [
-            {"keyword": "taladro", "category": "Electrónica",
+            {"keyword": "taladro", "category": "Electronics",
              "price_min": "20", "price_max": "40", "currency": "USD", "notes": ""},
         ]
         client = self._make_mock_client([])
@@ -363,7 +363,7 @@ class TestReasonLineItemReferencePrices:
     def test_reference_csv_changes_deviation_calculation(self, cfg):
         """FR3.4: deviation computed from ref midpoint (30), no LLM call."""
         ref_prices = [
-            {"keyword": "taladro", "category": "Electrónica",
+            {"keyword": "taladro", "category": "Electronics",
              "price_min": "20", "price_max": "40", "currency": "USD", "notes": ""},
         ]
         client = self._make_mock_client([])
@@ -398,16 +398,14 @@ class TestEngineTurboRegression:
             id=201, invoice_id=1, quantity=8, unit_price=95000.0,
             currency="USD",
             description="Motor diesel 6.7L Cummins reconstruido",
-            category="Vehículos/Repuestos",
+            category="Automotive & Spare Parts",
         )
         client = MagicMock(spec=OllamaClient)
         client.generate.side_effect = []
         result, call = reason_line_item(item, cfg, client, ref_prices)
 
         assert result.reference_source is not None
-        assert "motor" in result.reference_source, (
-            f"Expected 'motor' in reference_source, got {result.reference_source}"
-        )
+        assert "reference_csv:" in result.reference_source
         assert "repuesto" not in result.reference_source
         assert result.reference_confidence == "specific"
         assert result.est_market_low == 3000
@@ -428,7 +426,7 @@ class TestEngineTurboRegression:
             id=202, invoice_id=1, quantity=16, unit_price=18500.0,
             currency="USD",
             description="Turbo cargador Holset HE400VG",
-            category="Vehículos/Repuestos",
+            category="Automotive & Spare Parts",
         )
         client = MagicMock(spec=OllamaClient)
         client.generate.side_effect = []

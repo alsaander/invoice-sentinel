@@ -79,7 +79,7 @@ def _parse_extraction_response(text: str) -> List[Dict[str, Any]]:
 def _validate_category(category: str, vocabulary: List[str]) -> Tuple[str, Optional[str]]:
     if category in vocabulary:
         return category, None
-    return "Otro", category
+    return "Other", category
 
 
 def extract_line_items(

@@ -1,7 +1,7 @@
 {
-  "precio_min": 40,
-  "precio_max": 70,
-  "punto_medio": 55,
-  "desviacion_significativa": false,
-  "justificacion": "El precio de 50 USD está dentro del rango de mercado esperado para un taladro eléctrico inalámbrico de 18V. Los precios típicos en el mercado internacional oscilan entre 40 y 70 USD, por lo que 50 USD es un valor razonable."
+  "min_price": 40,
+  "max_price": 70,
+  "midpoint": 55,
+  "significant_deviation": false,
+  "justification": "The price of 50 USD is within the expected market range for a cordless 18V electric drill. Typical prices in the international market range between 40 and 70 USD, so 50 USD is a reasonable value."
 }

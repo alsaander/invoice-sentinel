@@ -1,5 +1,5 @@
 {
-  "precio_min": 5500,
-  "precio_max": 10000,
-  "justificacion": "El Taladro percutor inalambrico 20V profesional es un equipo de alta gama para uso industrial. Considerando el mercado internacional, el precio unitario típico para este tipo de herramienta profesional se encuentra en un rango entre 5500 y 10000 USD."
+  "min_price": 5500,
+  "max_price": 10000,
+  "justification": "The professional 20V cordless hammer drill is a high-end piece of equipment for industrial use. Considering the international market, the typical unit price for this type of professional tool falls within a range between 5,500 and 10,000 USD."
 }

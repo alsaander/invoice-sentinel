@@ -6,7 +6,7 @@
 in Ollama API requests.
 
 **History**: During a live M6b test, the reasoning retry produced
-`{"respuesta": "Nueva respuesta válida en formato JSON"}` and `[]` — both
+`{"response": "New valid JSON-formatted response"}` and `[]` — both
 valid JSON but not matching the expected reasoning schema. This resulted in
 severity=UNKNOWN for both line items. The bug then cascaded: the router issued
 no check for UNKNOWN severity, so the invoice was moved to `processed/` with

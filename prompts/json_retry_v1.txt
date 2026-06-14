@@ -1,3 +1,1 @@
-Tu respuesta anterior no era JSON válido. Responde de nuevo, EXCLUSIVAMENTE con
-JSON válido que cumpla el esquema solicitado, sin texto adicional ni bloques de
-código markdown.
+Your previous response was not valid JSON. Respond again, EXCLUSIVELY with valid JSON that conforms to the requested schema, with no additional text or markdown code blocks.

@@ -11,7 +11,7 @@ from invoicesentinel.reference_prices import (
 
 class TestLoadReferencePrices:
     def test_loads_csv(self):
-        csv_content = "keyword,category,price_min,price_max,currency,notes\ntaladro,Electrónica,30,80,USD,test row\n"
+        csv_content = "keyword,category,price_min,price_max,currency,notes,english_keyword\ntaladro,Electronics,30,80,USD,test row,drill\n"
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
             f.write(csv_content)
             path = f.name
@@ -41,13 +41,13 @@ class TestLoadReferencePrices:
 class TestFindMatch:
     def setup_method(self):
         self.prices = [
-            {"keyword": "taladro", "category": "Electrónica", "price_min": "30", "price_max": "80", "currency": "USD"},
-            {"keyword": "tornillo", "category": "Materiales de construcción", "price_min": "0.10", "price_max": "5", "currency": "USD"},
-            {"keyword": "valvula", "category": "Maquinaria", "price_min": "50", "price_max": "200", "currency": "EUR"},
+            {"keyword": "taladro", "category": "Electronics", "price_min": "30", "price_max": "80", "currency": "USD"},
+            {"keyword": "tornillo", "category": "Construction Materials", "price_min": "0.10", "price_max": "5", "currency": "USD"},
+            {"keyword": "valvula", "category": "Industrial Machinery", "price_min": "50", "price_max": "200", "currency": "EUR"},
         ]
 
     def test_matches_keyword_in_description(self):
-        match = find_match("Taladro eléctrico inalámbrico 18V", "Electrónica", self.prices)
+        match = find_match("Taladro eléctrico inalámbrico 18V", "Electronics", self.prices)
         assert match is not None
         assert match.row["keyword"] == "taladro"
         assert match.confidence == "specific"
@@ -55,7 +55,7 @@ class TestFindMatch:
 
     def test_matches_keyword_in_category(self):
         """Broad fallback when keyword matches category but not description."""
-        match = find_match("Válvula industrial DN50", "Maquinaria", self.prices)
+        match = find_match("Válvula industrial DN50", "Industrial Machinery", self.prices)
         assert match is not None
         assert match.row["keyword"] == "valvula"
         assert match.confidence == "specific"
@@ -64,24 +64,24 @@ class TestFindMatch:
     def test_category_only_fallback(self):
         """When keyword is NOT in description but IS in category → broad match."""
         prices = [
-            {"keyword": "repuesto", "category": "Vehículos/Repuestos", "price_min": "10", "price_max": "500"},
+            {"keyword": "repuesto", "category": "Automotive & Spare Parts", "price_min": "10", "price_max": "500"},
         ]
-        match = find_match("Llantas 225/60R17", "Vehículos/Repuestos", prices)
+        match = find_match("Llantas 225/60R17", "Automotive & Spare Parts", prices)
         assert match is not None
         assert match.confidence == "broad"
         assert match.specificity_score == 0
 
     def test_no_match_returns_none(self):
-        match = find_match("Algo completamente diferente", "Otro", self.prices)
+        match = find_match("Algo completamente diferente", "Other", self.prices)
         assert match is None
 
     def test_case_insensitive_match(self):
-        match = find_match("TALADRO PERCUTOR", "Electrónica", self.prices)
+        match = find_match("TALADRO PERCUTOR", "Electronics", self.prices)
         assert match is not None
         assert match.row["keyword"] == "taladro"
 
     def test_empty_prices_list(self):
-        match = find_match("taladro", "Electrónica", [])
+        match = find_match("taladro", "Electronics", [])
         assert match is None
 
     def test_prefers_multi_token_specificity(self):
@@ -91,7 +91,7 @@ class TestFindMatch:
             {"keyword": "taladro", "category": "", "price_min": "10", "price_max": "20"},
             {"keyword": "taladro percutor", "category": "", "price_min": "30", "price_max": "80"},
         ]
-        match = find_match("Taladro percutor profesional", "Electrónica", prices)
+        match = find_match("Taladro percutor profesional", "Electronics", prices)
         assert match is not None
         assert match.row["keyword"] == "taladro percutor"
         assert match.confidence == "specific"
@@ -101,10 +101,10 @@ class TestFindMatch:
         """A description-match row beats a category-only fallback even if
         the broad row appears first."""
         prices = [
-            {"keyword": "repuesto", "category": "Vehículos/Repuestos", "price_min": "10", "price_max": "500"},
-            {"keyword": "motor diesel", "category": "Vehículos/Repuestos", "price_min": "3000", "price_max": "15000"},
+            {"keyword": "repuesto", "category": "Automotive & Spare Parts", "price_min": "10", "price_max": "500"},
+            {"keyword": "motor diesel", "category": "Automotive & Spare Parts", "price_min": "3000", "price_max": "15000"},
         ]
-        match = find_match("Motor diesel 6.7L Cummins reconstruido", "Vehículos/Repuestos", prices)
+        match = find_match("Motor diesel 6.7L Cummins reconstruido", "Automotive & Spare Parts", prices)
         assert match is not None
         assert match.row["keyword"] == "motor diesel"
         assert match.confidence == "specific"
@@ -112,19 +112,48 @@ class TestFindMatch:
     def test_broad_fallback_when_no_description_match(self):
         """When no row matches the description, fall back to category match."""
         prices = [
-            {"keyword": "repuesto", "category": "Vehículos/Repuestos", "price_min": "10", "price_max": "500"},
-            {"keyword": "filtro", "category": "Vehículos/Repuestos", "price_min": "10", "price_max": "100"},
+            {"keyword": "repuesto", "category": "Automotive & Spare Parts", "price_min": "10", "price_max": "500"},
+            {"keyword": "filtro", "category": "Automotive & Spare Parts", "price_min": "10", "price_max": "100"},
         ]
-        match = find_match("Empaque de culata", "Vehículos/Repuestos", prices)
+        match = find_match("Empaque de culata", "Automotive & Spare Parts", prices)
         assert match is not None
         assert match.confidence == "broad"
         assert match.specificity_score == 0
         assert match.row["keyword"] == "repuesto"
 
+    def test_stop_word_not_counted(self):
+        """Stop-words like 'de' are not counted as matching tokens.
+        'disco de corte' against 'Hidroxido de sodio' should NOT match
+        via description — falls to category fallback."""
+        prices = [
+            {"keyword": "disco de corte", "category": "Industrial Machinery",
+             "price_min": "5", "price_max": "50"},
+            {"keyword": "acero", "category": "Chemicals",
+             "price_min": "500", "price_max": "2000"},
+        ]
+        match = find_match("Hidroxido de sodio", "Chemicals", prices)
+        assert match is not None
+        # 'disco de corte' has only 'de' matching → filtered out → falls to cat match
+        assert match.confidence == "broad"
+        assert match.specificity_score == 0
+        assert match.row["keyword"] == "acero"
+
+    def test_valid_stop_word_description_still_matches(self):
+        """Stop-words are filtered out but remaining significant tokens still match.
+        'disco de corte' against 'Disco de corte 7 pulgadas' → match."""
+        prices = [
+            {"keyword": "disco de corte", "category": "Industrial Machinery",
+             "price_min": "5", "price_max": "50"},
+        ]
+        match = find_match("Disco de corte 7 pulgadas", "Industrial Machinery", prices)
+        assert match is not None
+        assert match.confidence == "specific"
+        assert match.specificity_score == 2  # "disco" + "corte" = 2 significant tokens
+
 
 class TestBuildReferencePriceBlock:
     def test_returns_formatted_block(self):
-        match = {"keyword": "taladro", "category": "Electrónica", "price_min": "30", "price_max": "80", "currency": "USD"}
+        match = {"keyword": "taladro", "category": "Electronics", "price_min": "30", "price_max": "80", "currency": "USD"}
         block = build_reference_price_block(match)
         assert "30" in block
         assert "80" in block
@@ -133,7 +162,11 @@ class TestBuildReferencePriceBlock:
 
 
 class TestFormatReferenceSource:
-    def test_includes_keyword(self):
+    def test_uses_english_keyword_when_present(self):
+        match = {"keyword": "taladro", "english_keyword": "drill"}
+        assert format_reference_source(match) == "reference_csv:drill"
+
+    def test_fallback_to_spanish_keyword(self):
         match = {"keyword": "taladro"}
         assert format_reference_source(match) == "reference_csv:taladro"
 

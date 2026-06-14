@@ -4,8 +4,8 @@
       "quantity": 5,
       "unit_price": 1200.00,
       "currency": "USD",
-      "description": "Servidor rackeable Dell PowerEdge",
-      "category": "Maquinaria"
+      "description": "Dell PowerEdge rack-mounted server",
+      "category": "Industrial Machinery"
     }
   ]
 }

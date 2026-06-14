@@ -13,7 +13,7 @@ from invoicesentinel.models import LineItem, LlmCall, create_tables, insert_line
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 
-def make_text_pdf(path: str, text: str = "Factura de prueba\nTaladro electrico 18V\nCantidad: 10\nPrecio: 45.50 USD") -> str:
+def make_text_pdf(path: str, text: str = "Test invoice\nCordless 18V electric drill\nQuantity: 10\nPrice: 45.50 USD") -> str:
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Helvetica", size=12)

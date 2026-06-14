@@ -7,6 +7,8 @@ from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+STOP_WORDS: frozenset = frozenset({"de", "del", "en", "con", "para", "por", "x", "a"})
+
 
 @dataclass
 class MatchResult:
@@ -22,6 +24,10 @@ def _normalize(text: str) -> str:
 
 def _keyword_tokens(keyword: str) -> List[str]:
     return [t for t in keyword.split() if t]
+
+
+def _significant_tokens(keyword: str) -> List[str]:
+    return [t for t in _keyword_tokens(keyword) if t not in STOP_WORDS]
 
 
 def load_reference_prices(path: str) -> List[Dict[str, str]]:
@@ -40,7 +46,7 @@ def load_reference_prices(path: str) -> List[Dict[str, str]]:
 
 
 def _score_description_match(keyword: str, desc_norm: str) -> int:
-    tokens = _keyword_tokens(keyword)
+    tokens = _significant_tokens(keyword)
     if not tokens:
         return 0
     score = 0
@@ -61,8 +67,8 @@ def find_match(
       1. For each row, count how many keyword tokens appear as substrings
          in the normalized description.
       2. The row with the highest score is the description-based winner.
-      3. If no row scores >= 1, fall back to category-based matching
-         (keyword in normalized category) — this is the 'broad' fallback.
+      3. If no row scores >= 1, fall back to exact category match on the
+         row's category column — this is the 'broad' fallback.
       4. Ties broken by longer keyword (more specific wins).
 
     Confidence:
@@ -92,12 +98,10 @@ def find_match(
     if best_desc is not None:
         return best_desc
 
-    # Category fallback (broad): keyword matches category name
+    # Category fallback (broad): exact category match
     for row in prices:
-        keyword = _normalize(row.get("keyword", ""))
-        if not keyword:
-            continue
-        if keyword in cat_norm:
+        row_cat = _normalize(row.get("category", ""))
+        if row_cat == cat_norm:
             return MatchResult(
                 row=row,
                 specificity_score=0,
@@ -121,13 +125,14 @@ def build_reference_price_block(match: Dict[str, str]) -> str:
     ref_max = match.get("price_max", "")
     currency = match.get("currency", "USD")
     return (
-        f"Nota: existe un precio de referencia local de {ref_min}-{ref_max} {currency}"
-        f" para artículos similares; considéralo como ancla principal."
+        f"Note: a local reference price of {ref_min}-{ref_max} {currency}"
+        f" exists for similar items; use it as the primary anchor."
     )
 
 
 def format_reference_source(match: Dict[str, str]) -> str:
-    keyword = match.get("keyword", "").strip()
+    keyword = match.get("english_keyword", "") or match.get("keyword", "")
+    keyword = keyword.strip()
     if not keyword:
         keyword = "unknown"
     return f"reference_csv:{keyword}"

@@ -1,51 +1,51 @@
-keyword,category,price_min,price_max,currency,notes
-# Vehículos/Repuestos — high-value drivetrain (specific rows beat generic "repuesto")
-motor diesel,Vehículos/Repuestos,3000,15000,USD,Rebuilt diesel engine (6.7L Cummins class)
-motor reconstruido,Vehículos/Repuestos,3000,15000,USD,Rebuilt/remanufactured engine
-turbocargador,Vehículos/Repuestos,500,3000,USD,Turbocharger (e.g. Holset HE400VG class)
-turbo,Vehículos/Repuestos,500,3000,USD,Turbocharger shorthand
-transmision,Vehículos/Repuestos,2000,8000,USD,Transmission / gearbox rebuild
-alternador,Vehículos/Repuestos,100,500,USD,Alternator
-bomba inyeccion,Vehículos/Repuestos,200,800,USD,Injection pump
-radiador,Vehículos/Repuestos,80,400,USD,Radiator / cooling system
-# Vehículos/Repuestos — low-value consumables (fallback when no specific row matches)
-repuesto consumible,Vehículos/Repuestos,10,500,USD,Generic consumable part (filter/belt/gasket)
-filtro,Vehículos/Repuestos,10,100,USD,Oil / air / fuel filter
-banda,Vehículos/Repuestos,15,80,USD,Belt / serpentine belt
-bujia,Vehículos/Repuestos,5,30,USD,Spark plug
-# Vehículos/Repuestos — wheel / battery (already specific)
-llanta,Vehículos/Repuestos,50,300,USD,Tire / wheel
-bateria,Vehículos/Repuestos,50,300,USD,Car battery
-# Maquinaria — specific tools
-taladro,Maquinaria,80,300,USD,Cordless hammer drill
-taladro percutor,Maquinaria,100,350,USD,Percussion hammer drill
-disco de corte,Maquinaria,5,50,USD,Cutting disc
-sierra,Maquinaria,50,500,USD,Power saw
-# Maquinaria — high-value industrial
-motor industrial,Maquinaria,5000,25000,USD,Electric / industrial motor
-bomba,Maquinaria,200,5000,USD,Industrial pump
-compresor,Maquinaria,500,5000,USD,Air compressor
-# Electrónica — specific devices
-laptop,Electrónica,300,3000,USD,Laptop computer
-monitor,Electrónica,100,800,USD,Monitor display
-camara,Electrónica,20,500,USD,Camera / CCTV / webcam
-# Electrónica — networking / enterprise
-servidor,Electrónica,2000,15000,USD,Server / rack-mounted
-router,Electrónica,50,500,USD,Network router / switch
-# Electrónica — components / cabling
-cable,Electrónica,1,50,USD,Cable / wiring / harness
-transformador,Electrónica,10,200,USD,Transformer / power supply
+keyword,category,price_min,price_max,currency,notes,english_keyword
+# Automotive & Spare Parts — high-value drivetrain (specific rows beat generic "spare part")
+motor diesel,Automotive & Spare Parts,3000,15000,USD,Rebuilt diesel engine (6.7L Cummins class),diesel engine
+motor reconstruido,Automotive & Spare Parts,3000,15000,USD,Rebuilt/remanufactured engine,rebuilt engine
+turbocargador,Automotive & Spare Parts,500,3000,USD,Turbocharger (e.g. Holset HE400VG class),turbocharger
+turbo,Automotive & Spare Parts,500,3000,USD,Turbocharger shorthand,turbo
+transmision,Automotive & Spare Parts,2000,8000,USD,Transmission / gearbox rebuild,transmission
+alternador,Automotive & Spare Parts,100,500,USD,Alternator,alternator
+bomba inyeccion,Automotive & Spare Parts,200,800,USD,Injection pump,injection pump
+radiador,Automotive & Spare Parts,80,400,USD,Radiator / cooling system,radiator
+# Automotive & Spare Parts — low-value consumables (fallback when no specific row matches)
+repuesto consumible,Automotive & Spare Parts,10,500,USD,Generic consumable part (filter/belt/gasket),consumable spare part
+filtro,Automotive & Spare Parts,10,100,USD,Oil / air / fuel filter,filter
+banda,Automotive & Spare Parts,15,80,USD,Belt / serpentine belt,belt
+bujia,Automotive & Spare Parts,5,30,USD,Spark plug,spark plug
+# Automotive & Spare Parts — wheel / battery (already specific)
+llanta,Automotive & Spare Parts,50,300,USD,Tire / wheel,tire
+bateria,Automotive & Spare Parts,50,300,USD,Car battery,battery
+# Industrial Machinery — specific tools
+taladro,Industrial Machinery,80,300,USD,Cordless hammer drill,drill
+taladro percutor,Industrial Machinery,100,350,USD,Percussion hammer drill,hammer drill
+disco de corte,Industrial Machinery,5,50,USD,Cutting disc,cutting disc
+sierra,Industrial Machinery,50,500,USD,Power saw,saw
+# Industrial Machinery — high-value industrial
+motor industrial,Industrial Machinery,5000,25000,USD,Electric / industrial motor,industrial motor
+bomba,Industrial Machinery,200,5000,USD,Industrial pump,pump
+compresor,Industrial Machinery,500,5000,USD,Air compressor,compressor
+# Electronics — specific devices
+laptop,Electronics,300,3000,USD,Laptop computer,laptop
+monitor,Electronics,100,800,USD,Monitor display,monitor
+camara,Electronics,20,500,USD,Camera / CCTV / webcam,camera
+# Electronics — networking / enterprise
+servidor,Electronics,2000,15000,USD,Server / rack-mounted,server
+router,Electronics,50,500,USD,Network router / switch,router
+# Electronics — components / cabling
+cable,Electronics,1,50,USD,Cable / wiring / harness,cable
+transformador,Electronics,10,200,USD,Transformer / power supply,transformer
 # Textiles
-camiseta,Textiles,5,30,USD,T-shirt
-uniforme,Textiles,15,100,USD,Uniform / workwear
-# Materiales de construcción
-tornillo,Materiales de construcción,0.05,2,USD,Screw / fastener
-tuerca,Materiales de construcción,0.05,1,USD,Nut / fastener
-cemento,Materiales de construcción,5,20,USD,Cement bag (42.5kg)
-ladrillo,Materiales de construcción,0.2,2,USD,Brick / block
-# Alimentos
-aceite,Alimentos,2,15,USD,Cooking oil (liter)
-arroz,Alimentos,0.5,3,USD,Rice (kg)
-# Químicos
-acero,Químicos,500,2000,USD,Steel per metric ton
-pintura,Químicos,5,50,USD,Paint (gallon)
+camiseta,Textiles,5,30,USD,T-shirt,t-shirt
+uniforme,Textiles,15,100,USD,Uniform / workwear,uniform
+# Construction Materials
+tornillo,Construction Materials,0.05,2,USD,Screw / fastener,screw
+tuerca,Construction Materials,0.05,1,USD,Nut / fastener,nut
+cemento,Construction Materials,5,20,USD,Cement bag (42.5kg),cement
+ladrillo,Construction Materials,0.2,2,USD,Brick / block,brick
+# Food & Beverage
+aceite,Food & Beverage,2,15,USD,Cooking oil (liter),oil
+arroz,Food & Beverage,0.5,3,USD,Rice (kg),rice
+# Chemicals
+acero,Chemicals,500,2000,USD,Steel per metric ton,steel
+pintura,Chemicals,5,50,USD,Paint (gallon),paint

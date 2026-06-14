@@ -33,7 +33,7 @@ class MockOllamaClient:
     def generate(self, prompt: str, system: str = None) -> str:
         prompt_lower = prompt.lower()
         self._call_count += 1
-        if "extracción" in prompt_lower:
+        if "product/service" in prompt_lower:
             return (
                 FIXTURES_DIR / "extraction_response_1.json"
             ).read_text()
@@ -49,12 +49,12 @@ def make_test_pdf(path: str, text: str = None) -> str:
     fname = os.path.basename(path)
     if text is None:
         text = (
-            f"FACTURA {fname}\n"
-            "Proveedor: Empresa XYZ S.A.\n"
-            "Taladro electrico 18V\n"
-            "Cantidad: 10  Precio: 45.50 USD\n"
-            "Tornillo M8 30mm\n"
-            "Cantidad: 200  Precio: 2.30 USD\n"
+            f"INVOICE {fname}\n"
+            "Supplier: Company XYZ S.A.\n"
+            "Cordless 18V electric drill\n"
+            "Quantity: 10  Price: 45.50 USD\n"
+            "Stainless steel M8 x 30mm hex bolt\n"
+            "Quantity: 200  Price: 2.30 USD\n"
         )
     pdf = FPDF()
     pdf.add_page()
@@ -139,9 +139,9 @@ class TestRunPipeline:
             inv_id = rows[0][0]
             items = get_invoice_line_items(conn, inv_id)
             assert len(items) == 2
-            assert items[0].description == "Taladro eléctrico inalámbrico 18V"
+            assert items[0].description == "Cordless 18V electric drill"
             assert items[0].deviation_pct is not None
-            assert items[0].category == "Electrónica"
+            assert items[0].category == "Electronics"
         finally:
             client.close()
             conn.close()

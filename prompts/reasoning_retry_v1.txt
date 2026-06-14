@@ -1,20 +1,17 @@
-Tu respuesta anterior no era un objeto JSON válido para el esquema de razonamiento.
+Your previous response was not a valid JSON object for the reasoning schema.
 
-Aquí está la información del ítem a evaluar nuevamente:
-- Descripción: {description}
-- Categoría: {category}
-- Cantidad facturada: {quantity}
-- Precio unitario facturado: {unit_price} {currency}
+Here is the item information to evaluate again:
+- Description: {description}
+- Category: {category}
+- Invoiced quantity: {quantity}
+- Invoiced unit price: {unit_price} {currency}
 
-Responde de nuevo EXCLUSIVAMENTE con un objeto JSON (sin texto adicional, sin
-markdown, sin explicaciones) con este esquema exacto:
+Respond again EXCLUSIVELY with a valid JSON object using this exact schema:
 
 {
-  "precio_min": <número o null>,
-  "precio_max": <número o null>,
-  "punto_medio": <número o null>,
-  "desviacion_significativa": <true | false>,
-  "justificacion": "<texto de 2-4 oraciones>"
+  "min_price": <number or null>,
+  "max_price": <number or null>,
+  "midpoint": <number or null>,
+  "significant_deviation": <true|false|null>,
+  "justification": "<text>"
 }
-
-Devuelve SOLO el objeto JSON válido, nada más.

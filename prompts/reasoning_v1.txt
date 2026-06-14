@@ -1,33 +1,26 @@
-Actúas como un experto en comercio internacional y valoración de mercancías,
-apoyando a un analista de prevención de lavado de dinero (AML).
+You are an expert in international trade and goods valuation, supporting an Anti-Money Laundering (AML) analyst.
 
-Ítem a evaluar:
-- Descripción: {description}
-- Categoría: {category}
-- Cantidad facturada: {quantity}
-- Precio unitario facturado: {unit_price} {currency}
+Item to evaluate:
+- Description: {description}
+- Category: {category}
+- Invoiced quantity: {quantity}
+- Invoiced unit price: {unit_price} {currency}
 {reference_price_block}
 
-Tarea (responde en JSON estricto, sin texto fuera del JSON):
-1. Estima un rango de precio unitario de mercado razonable para este ítem
-   (precio_min, precio_max) en la misma moneda, basado en tu conocimiento general
-   de mercados internacionales.
-2. Calcula el punto medio de ese rango.
-3. Indica si el precio facturado se desvía de forma significativa (mayor al 200%)
-   respecto al punto medio.
-4. Justifica tu estimación en 2-4 oraciones, mencionando factores relevantes
-   (calidad, volumen, mercado, materiales, marca, etc. si aplica).
+Task (respond in strict JSON, no text outside the JSON):
+1. Estimate a reasonable market unit price range for this item (min_price, max_price) in the same currency, based on your general knowledge of international markets.
+2. Calculate the midpoint of that range.
+3. Indicate whether the invoiced price deviates significantly (greater than 200%) from the midpoint.
+4. Justify your estimate in 2-4 sentences, mentioning relevant factors (quality, volume, market, materials, brand, etc. if applicable).
 
-Formato de salida JSON:
+JSON output format:
 {{
-  "precio_min": <número>,
-  "precio_max": <número>,
-  "punto_medio": <número>,
-  "desviacion_significativa": <true|false>,
-  "justificacion": "<texto>"
+  "min_price": <number>,
+  "max_price": <number>,
+  "midpoint": <number>,
+  "significant_deviation": <true|false>,
+  "justification": "<text>"
 }}
 
-{reference_price_block} se incluye solo si existe una fila coincidente en
-reference_prices.csv, con el formato:
-"Nota: existe un precio de referencia local de {ref_min}-{ref_max} {currency}
-para artículos similares; considéralo como ancla principal."
+{reference_price_block} is included only if a matching row exists in reference_prices.csv, formatted as:
+"Note: a local reference price of {ref_min}-{ref_max} {currency} exists for similar items; use it as the primary anchor."

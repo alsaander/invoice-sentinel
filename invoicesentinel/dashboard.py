@@ -46,11 +46,11 @@ def render_line_items_tab(conn: sqlite3.Connection, invoice_id: int) -> None:
             with col1:
                 cat_style = (
                     f"background-color: #fff3cd; padding: 0 4px; border-radius: 4px; font-weight: bold; color: #856404; display: inline"
-                    if li.category == "Otro"
+                    if li.category == "Other"
                     else ""
                 )
                 desc_html = f"<strong>{li.description}</strong>"
-                cat_html = f"<span style='{cat_style}'>{li.category}</span>" if li.category == "Otro" else li.category
+                cat_html = f"<span style='{cat_style}'>{li.category}</span>" if li.category == "Other" else li.category
                 st.markdown(
                     f"{desc_html} &mdash; Category: {cat_html}",
                     unsafe_allow_html=True,

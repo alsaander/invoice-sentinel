@@ -4,22 +4,22 @@
       "quantity": 10,
       "unit_price": 45.50,
       "currency": "USD",
-      "description": "Taladro eléctrico inalámbrico 18V",
-      "category": "Electrónica"
+      "description": "Cordless 18V electric drill",
+      "category": "Electronics"
     },
     {
       "quantity": 200,
       "unit_price": 2.30,
       "currency": "USD",
-      "description": "Tornillo hexagonal M8 x 30mm acero inoxidable",
-      "category": "Materiales de construcción"
+      "description": "Stainless steel M8 x 30mm hex bolt",
+      "category": "Construction Materials"
     },
     {
       "quantity": 5,
       "unit_price": 1200.00,
       "currency": "USD",
-      "description": "Servidor rackeable Dell PowerEdge",
-      "category": "Maquinaria"
+      "description": "Dell PowerEdge rack-mounted server",
+      "category": "Industrial Machinery"
     }
   ]
 }

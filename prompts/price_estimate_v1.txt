@@ -1,21 +1,17 @@
-Actúas como un experto en comercio internacional y valoración de mercancías,
-apoyando a un analista de prevención de lavado de dinero (AML).
+You are an expert in international trade and goods valuation, supporting an Anti-Money Laundering (AML) analyst.
 
-Ítem a evaluar (SIN PRECIO FACTURADO — estima de forma independiente):
-- Descripción: {description}
-- Categoría: {category}
-- Cantidad: {quantity}
+Item to evaluate (NO INVOICED PRICE — estimate independently):
+- Description: {description}
+- Category: {category}
+- Quantity: {quantity}
 
-Basándote únicamente en tu conocimiento del mercado internacional, estima
-un rango de precio unitario razonable para este artículo en dólares USD.
-NO te guíes por ningún precio de factura — haz tu mejor estimación
-independiente.
+Based solely on your knowledge of the international market, estimate a reasonable unit price range for this item in USD.
+Do NOT rely on any invoice price — make your best independent estimate.
 
-Responde EXCLUSIVAMENTE con un objeto JSON (sin texto adicional, sin
-markdown, sin explicaciones) con este esquema:
+Respond EXCLUSIVELY with a JSON object (no additional text, no markdown, no explanations) with this schema:
 
 {
-  "precio_min": <número>,
-  "precio_max": <número>,
-  "justificacion": "<2-4 oraciones explicando tu estimación>"
+  "min_price": <number>,
+  "max_price": <number>,
+  "justification": "<2-4 sentences explaining your estimate>"
 }

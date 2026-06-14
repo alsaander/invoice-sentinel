@@ -1,7 +1,7 @@
 {
-  "precio_min": null,
-  "precio_max": null,
-  "punto_medio": null,
-  "desviacion_significativa": null,
-  "justificacion": "No se puede determinar un rango de mercado para este artículo especializado debido a la falta de datos comparables en el mercado internacional."
+  "min_price": null,
+  "max_price": null,
+  "midpoint": null,
+  "significant_deviation": null,
+  "justification": "A market range cannot be determined for this specialized item due to a lack of comparable data in the international market."
 }

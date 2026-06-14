@@ -26,7 +26,7 @@ def _load_fixture(name: str) -> str:
 class TestPromptHelpers:
     def test_load_prompt_template(self):
         content = load_prompt_template("extraction_v1")
-        assert "Eres un sistema de extracción" in content
+        assert "international commercial invoice" in content.lower()
         assert "{raw_text}" in content
 
     def test_build_extraction_prompt(self):
@@ -36,16 +36,16 @@ class TestPromptHelpers:
 
     def test_build_retry_prompt(self):
         result = build_retry_prompt()
-        assert "Tu respuesta anterior no era JSON válido" in result
+        assert "Your previous response was not valid JSON" in result
 
     def test_build_retry_does_not_contain_raw_text_placeholder(self):
         result = build_retry_prompt()
         assert "{raw_text}" not in result
 
     def test_build_extraction_retry_prompt(self):
-        result = build_extraction_retry_prompt("FACTURA CON ITEMS")
+        result = build_extraction_retry_prompt("INVOICE WITH ITEMS")
         assert "{raw_text}" not in result
-        assert "FACTURA CON ITEMS" in result
+        assert "INVOICE WITH ITEMS" in result
         assert "items" in result
         assert "quantity" in result
 
@@ -104,30 +104,30 @@ class TestParseExtractionResponse:
 
 class TestValidateCategory:
     VOCAB = [
-        "Electrónica", "Materiales de construcción", "Textiles",
-        "Maquinaria", "Alimentos", "Químicos",
-        "Vehículos/Repuestos", "Otro",
+        "Electronics", "Construction Materials", "Textiles",
+        "Industrial Machinery", "Food & Beverage", "Chemicals",
+        "Automotive & Spare Parts", "Other",
     ]
 
     def test_valid_category(self):
-        cat, raw = _validate_category("Electrónica", self.VOCAB)
-        assert cat == "Electrónica"
+        cat, raw = _validate_category("Electronics", self.VOCAB)
+        assert cat == "Electronics"
         assert raw is None
 
-    def test_otro_mapped_to_otro(self):
-        cat, raw = _validate_category("Ropa deportiva", self.VOCAB)
-        assert cat == "Otro"
-        assert raw == "Ropa deportiva"
+    def test_other_mapped_to_other(self):
+        cat, raw = _validate_category("Sportswear", self.VOCAB)
+        assert cat == "Other"
+        assert raw == "Sportswear"
 
     def test_empty_category(self):
         cat, raw = _validate_category("", self.VOCAB)
-        assert cat == "Otro"
+        assert cat == "Other"
         assert raw == ""
 
     def test_case_sensitive(self):
-        cat, raw = _validate_category("electrónica", self.VOCAB)
-        assert cat == "Otro"
-        assert raw == "electrónica"
+        cat, raw = _validate_category("electronics", self.VOCAB)
+        assert cat == "Other"
+        assert raw == "electronics"
 
 
 class TestExtractLineItems:
@@ -142,7 +142,7 @@ class TestExtractLineItems:
         items, calls = extract_line_items(invoice_id, "dummy text", cfg, client)
         assert len(items) == 3
         assert all(li.severity != "PARSE_ERROR" for li in items)
-        assert [li.category for li in items] == ["Electrónica", "Materiales de construcción", "Maquinaria"]
+        assert [li.category for li in items] == ["Electronics", "Construction Materials", "Industrial Machinery"]
         assert len(calls) == 1
         assert calls[0].call_type == "extraction"
         assert calls[0].prompt_version == "extraction_v1"
@@ -153,7 +153,7 @@ class TestExtractLineItems:
         client = self._make_mock_client([malformed, valid])
         items, calls = extract_line_items(invoice_id, "dummy text", cfg, client)
         assert len(items) == 1
-        assert items[0].description == "Servidor rackeable Dell PowerEdge"
+        assert items[0].description == "Dell PowerEdge rack-mounted server"
         assert len(calls) == 2, "NFR4: original + retry both logged"
         assert calls[0].call_type == "extraction"
         assert calls[0].prompt_version == "extraction_v1"
@@ -177,17 +177,17 @@ class TestExtractLineItems:
         items, calls = extract_line_items(invoice_id, "dummy text", cfg, client)
         assert len(items) == 1
         li = items[0]
-        assert li.category == "Otro"
-        assert li.category_raw == "Ropa deportiva"
-        assert li.description == "Camiseta de algodón premium"
+        assert li.category == "Other"
+        assert li.category_raw == "Sportswear"
+        assert li.description == "Premium cotton t-shirt"
 
     def test_markdown_wrapped_json(self, invoice_id, cfg):
         raw = _load_fixture("extraction_response_markdown.json")
         client = self._make_mock_client([raw])
         items, calls = extract_line_items(invoice_id, "dummy text", cfg, client)
         assert len(items) == 1
-        assert items[0].description == "Resistencia eléctrica 220V 1500W"
-        assert items[0].category == "Electrónica"
+        assert items[0].description == "220V 1500W electrical resistor"
+        assert items[0].category == "Electronics"
 
     def test_line_item_fields_populated(self, invoice_id, cfg):
         raw = _load_fixture("extraction_response_3_items.json")
@@ -198,8 +198,8 @@ class TestExtractLineItems:
         assert li.quantity == 10
         assert li.unit_price == 45.50
         assert li.currency == "USD"
-        assert li.description == "Taladro eléctrico inalámbrico 18V"
-        assert li.category == "Electrónica"
+        assert li.description == "Cordless 18V electric drill"
+        assert li.category == "Electronics"
         assert li.category_raw is None
         assert li.severity == "PENDING"
 
@@ -222,7 +222,7 @@ class TestExtractLineItems:
             "unit_price": None,
             "currency": "UNKNOWN",
             "description": "Item with nulls",
-            "category": "Otro",
+            "category": "Other",
         }])
         client = self._make_mock_client([raw])
         items, calls = extract_line_items(invoice_id, "dummy text", cfg, client)
@@ -240,7 +240,7 @@ class TestExtractLineItems:
         client = self._make_mock_client([raw])
         items, calls = extract_line_items(invoice_id, "dummy text", cfg, client)
         assert len(items) == 1
-        assert items[0].description == "Camara de CCTV"
+        assert items[0].description == "CCTV camera"
         assert len(calls) == 1, "NFR4: single call logged"
         assert calls[0].call_type == "extraction"
         assert calls[0].prompt_version == "extraction_v1"

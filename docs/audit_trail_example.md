@@ -9,12 +9,12 @@ compliance officer would reconstruct the decision trail for a flagged line item
 ## Sample Invoice: `02_high_overpriced.pdf`
 
 ```
-FACTURA - Empresa Beta S.A.
-Fecha: 2026-06-02
-Cantidad: 5  Descripcion: Taladro industrial 20V
-Precio Unitario: 5000.00 USD
-Cantidad: 100  Descripcion: Caja de engranajes
-Precio Unitario: 350.00 USD
+INVOICE - Beta Corp S.A.
+Date: 2026-06-02
+Quantity: 5  Description: 20V Industrial drill
+Unit Price: 5000.00 USD
+Quantity: 100  Description: Gearbox
+Unit Price: 350.00 USD
 ```
 
 ---
@@ -53,15 +53,15 @@ Extraction prompt sent the full raw text (from pdfplumber). Raw response:
     "quantity": 5,
     "unit_price": 5000,
     "currency": "USD",
-    "description": "Taladro industrial 20V",
-    "category": "Electrónica"
+    "description": "20V Industrial drill",
+    "category": "Electronics"
   },
   {
     "quantity": 100,
     "unit_price": 350,
     "currency": "USD",
-    "description": "Caja de engranajes",
-    "category": "Maquinaria"
+    "description": "Gearbox",
+    "category": "Machinery"
   }
 ]
 ```
@@ -73,27 +73,27 @@ No retry needed.
 
 ## Step 3: Line Items Created (`line_items`)
 
-### Line item 1 — Taladro industrial 20V
+### Line item 1 — 20V Industrial drill
 
 | Column | Value (before reasoning) |
 |---|---|
-| `description` | `Taladro industrial 20V` |
+| `description` | `20V Industrial drill` |
 | `quantity` | 5.0 |
 | `unit_price` | 5000.0 |
 | `currency` | `USD` |
-| `category` | `Electrónica` |
+| `category` | `Electronics` |
 | `category_raw` | NULL |
 | `severity` | `PENDING` |
 
-### Line item 2 — Caja de engranajes
+### Line item 2 — Gearbox
 
 | Column | Value (before reasoning) |
 |---|---|
-| `description` | `Caja de engranajes` |
+| `description` | `Gearbox` |
 | `quantity` | 100.0 |
 | `unit_price` | 350.0 |
 | `currency` | `USD` |
-| `category` | `Maquinaria` |
+| `category` | `Machinery` |
 | `category_raw` | NULL |
 | `severity` | `PENDING` |
 
@@ -115,27 +115,27 @@ Two separate reasoning calls, one per line item. Traceable via `line_item_id`.
 
 Reasoning prompt sent:
 ```
-- Descripcion: Taladro industrial 20V
-- Categoria: Electronica
-- Cantidad: 5
-- Precio unitario: 5000 USD
+- Description: 20V Industrial drill
+- Category: Electronics
+- Quantity: 5
+- Unit price: 5000 USD
 ```
 
 Raw LLM response:
 ```json
 {
-  "precio_min": 150,
-  "precio_max": 500,
-  "punto_medio": 325,
-  "desviacion_significativa": true,
-  "justificacion": "El precio de 5000 USD por un taladro industrial de 20V es extremadamente alto. En el mercado internacional, taladros industriales de esta especificacion suelen costar entre 150 y 500 USD dependiendo de la marca. Un precio de 5000 USD representa una desviacion de mas del 1000% respecto al punto medio del rango estimado, lo cual es altamente sospechoso y consistente con sobrefacturacion en TBML."
+  "price_min": 150,
+  "price_max": 500,
+  "midpoint": 325,
+  "significant_deviation": true,
+  "justification": "The price of 5000 USD for a 20V industrial drill is extremely high. In the international market, industrial drills of this specification typically cost between 150 and 500 USD depending on the brand. A price of 5000 USD represents a deviation of more than 1000% from the midpoint of the estimated range, which is highly suspicious and consistent with over-invoicing in TBML."
 }
 ```
 
 ### Deterministic severity computation (Python, not LLM):
 ```
 unit_price = 5000
-punto_medio = 325
+midpoint = 325
 deviation_pct = (5000 - 325) / 325 * 100 = +1438.46%
 abs_deviation = 1438.46% > 200 → severity = HIGH
 ```
@@ -152,11 +152,11 @@ abs_deviation = 1438.46% > 200 → severity = HIGH
 
 ```json
 {
-  "precio_min": 200,
-  "precio_max": 600,
-  "punto_medio": 400,
-  "desviacion_significativa": false,
-  "justificacion": "El precio de 350 USD por una caja de engranajes esta dentro del rango de mercado esperado de 200-600 USD."
+  "price_min": 200,
+  "price_max": 600,
+  "midpoint": 400,
+  "significant_deviation": false,
+  "justification": "The price of 350 USD for a gearbox is within the expected market range of 200-600 USD."
 }
 ```
 
@@ -169,7 +169,7 @@ abs_deviation = 12.5% ≤ 100 → severity = NORMAL
 
 ## Step 5: Updated Line Items After Reasoning
 
-### Line item 1 — Taladro (HIGH)
+### Line item 1 — Drill (HIGH)
 
 | Column | Updated value |
 |---|---|
@@ -180,7 +180,7 @@ abs_deviation = 12.5% ≤ 100 → severity = NORMAL
 | `reference_source` | `llm_estimate` |
 | `justification` | Full LLM CoT text verbatim |
 
-### Line item 2 — Caja de engranajes (NORMAL)
+### Line item 2 — Gearbox (NORMAL)
 
 | Column | Updated value |
 |---|---|
@@ -210,10 +210,9 @@ Analyst opens Streamlit dashboard, sees invoice in Review Queue:
 
 ```
 🚩 02_high_overpriced.pdf  [MANUAL_REVIEW]
-  ├─ Taladro industrial 20V  (HIGH, +1438.46%)
-  │   Justification: El precio de 5000 USD...
-  │   [✓ Reviewed OK]  [⚠ Escalate]
-  └─ Caja de engranajes  (NORMAL, -12.5%)
+  ├─ 20V Industrial drill  (HIGH, +1438.46%)
+  │   Justification: The price of 5000 USD...
+  └─ Gearbox  (NORMAL, -12.5%)
 ```
 
 Analyst clicks **⚠ Escalate** → `analyst_verdict = 'REVIEWED_ESCALATE'` written
@@ -224,8 +223,8 @@ to `line_items.id=1`.
 ## Regulatory Q&A
 
 **Q: Why was this invoice flagged?**  
-A: Because the LLM estimated a fair market range of 150–500 USD for a "Taladro
-industrial 20V", but the invoice priced it at 5000 USD. The deterministic
+A: Because the LLM estimated a fair market range of 150–500 USD for a "20V
+Industrial drill", but the invoice priced it at 5000 USD. The deterministic
 computation gave a deviation of +1438%, which exceeded the 200% HIGH threshold.
 
 **Q: How do I know the system didn't just make this up?**  

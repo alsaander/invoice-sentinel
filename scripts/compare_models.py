@@ -31,40 +31,40 @@ from invoicesentinel.reference_prices import load_reference_prices, find_match
 
 TEST_ITEMS = [
     {
-        "name": "Taladro drill (over-invoice test)",
-        "description": "Taladro percutor inalambrico 20V profesional",
-        "category": "Maquinaria",
+        "name": "Cordless electric drill (over-invoice test)",
+        "description": "Cordless hammer drill 20V professional",
+        "category": "Industrial Machinery",
         "quantity": 50,
         "unit_price": 8500.0,
         "currency": "USD",
     },
     {
-        "name": "Disco de corte",
-        "description": "Disco de corte para metal 7 pulgadas",
-        "category": "Maquinaria",
+        "name": "Cutting disc",
+        "description": "Metal cutting disc 7 inches",
+        "category": "Industrial Machinery",
         "quantity": 100,
         "unit_price": 15.0,
         "currency": "USD",
     },
     {
-        "name": "Laptop genérica",
-        "description": "Laptop 15.6 pulgadas i5 8GB RAM",
-        "category": "Electrónica",
+        "name": "Generic laptop",
+        "description": "Laptop 15.6 inches i5 8GB RAM",
+        "category": "Electronics",
         "quantity": 10,
         "unit_price": 800.0,
         "currency": "USD",
     },
     {
-        "name": "Cemento (bulk over-invoice)",
-        "description": "Cemento Portland tipo I 42.5kg",
-        "category": "Materiales de construcción",
+        "name": "Cement (bulk over-invoice)",
+        "description": "Portland cement type I 42.5kg",
+        "category": "Construction Materials",
         "quantity": 1000,
         "unit_price": 50.0,
         "currency": "USD",
     },
     {
-        "name": "Camiseta (normal)",
-        "description": "Camiseta manga corta 100% algodón",
+        "name": "T-shirt (normal)",
+        "description": "Short sleeve t-shirt 100% cotton",
         "category": "Textiles",
         "quantity": 500,
         "unit_price": 12.0,
@@ -103,9 +103,9 @@ def run_item(client, item, ref_prices):
 
     try:
         parsed = _parse_price_estimate_json(response)
-        precio_min = _safe_float(parsed.get("precio_min"))
-        precio_max = _safe_float(parsed.get("precio_max"))
-        justification = parsed.get("justificacion", "")
+        min_price = _safe_float(parsed.get("min_price"))
+        max_price = _safe_float(parsed.get("max_price"))
+        justification = parsed.get("justification", "")
     except (json.JSONDecodeError, ValueError):
         return {
             "success": False,
@@ -114,10 +114,10 @@ def run_item(client, item, ref_prices):
             "latency_ms": latency_ms,
         }
 
-    if precio_min is None or precio_max is None:
+    if min_price is None or max_price is None:
         return {
             "success": False,
-            "error": "Missing precio_min/precio_max",
+            "error": "Missing min_price/max_price",
             "raw": response,
             "latency_ms": latency_ms,
         }
@@ -125,13 +125,13 @@ def run_item(client, item, ref_prices):
     # Check reference CSV
     ref_match = find_match(item["description"], item["category"], ref_prices)
     midpoint, deviation_pct, severity = compute_metrics(
-        item["unit_price"], precio_min, precio_max,
+        item["unit_price"], min_price, max_price,
     )
 
     return {
         "success": True,
-        "precio_min": precio_min,
-        "precio_max": precio_max,
+        "precio_min": min_price,
+        "precio_max": max_price,
         "midpoint": midpoint,
         "deviation_pct": deviation_pct,
         "severity": severity,

@@ -20,7 +20,7 @@ class MockOllamaClient:
 
     def generate(self, prompt: str, system: str = None) -> str:
         prompt_lower = prompt.lower()
-        if "extracción" in prompt_lower:
+        if "product/service" in prompt_lower:
             return (FIXTURES_DIR / "extraction_response_1.json").read_text()
         return (FIXTURES_DIR / "reasoning_response_1.json").read_text()
 
@@ -32,12 +32,11 @@ class MockFailingExtractionClient:
     def __init__(self, base_url="http://localhost:11434", model="llama3:8b"):
         self.base_url = base_url
         self.model = model
+        self._call_count = 0
 
     def generate(self, prompt: str, system: str = None) -> str:
-        prompt_lower = prompt.lower()
-        if "extracción" in prompt_lower:
-            return "NOT VALID JSON"
-        return (FIXTURES_DIR / "reasoning_response_1.json").read_text()
+        self._call_count += 1
+        return "NOT VALID JSON"
 
     def close(self):
         pass
@@ -60,12 +59,12 @@ def make_test_pdf(path: str, text: str = None) -> str:
     fname = os.path.basename(path)
     if text is None:
         text = (
-            f"FACTURA {fname}\n"
-            "Proveedor: Empresa XYZ S.A.\n"
-            "Taladro electrico 18V\n"
-            "Cantidad: 10  Precio: 45.50 USD\n"
-            "Tornillo M8 30mm\n"
-            "Cantidad: 200  Precio: 2.30 USD\n"
+            f"INVOICE {fname}\n"
+            "Supplier: Company XYZ S.A.\n"
+            "Cordless 18V electric drill\n"
+            "Quantity: 10  Price: 45.50 USD\n"
+            "Stainless steel M8 x 30mm hex bolt\n"
+            "Quantity: 200  Price: 2.30 USD\n"
         )
     pdf = FPDF()
     pdf.add_page()
@@ -115,8 +114,8 @@ class TestSingleRunLogEvents:
         events = list(run_single_pipeline(pdf, cfg, client))
         item_events = [e for e in events if e["type"] == "item"]
         assert len(item_events) == 2
-        assert "Taladro" in item_events[0]["message"]
-        assert "Tornillo" in item_events[1]["message"]
+        assert "Cordless" in item_events[0]["message"]
+        assert "hex bolt" in item_events[1]["message"]
 
     def test_routing_decision_in_events(self, cfg: Config):
         pdf = os.path.join(cfg.paths.inbox, "test.pdf")

@@ -18,14 +18,14 @@ extraction:
   min_text_chars: 50
 
 category_vocabulary:
-  - "Electrónica"
-  - "Materiales de construcción"
+  - "Electronics"
+  - "Construction Materials"
   - "Textiles"
-  - "Maquinaria"
-  - "Alimentos"
-  - "Químicos"
-  - "Vehículos/Repuestos"
-  - "Otro"
+  - "Industrial Machinery"
+  - "Food & Beverage"
+  - "Chemicals"
+  - "Automotive & Spare Parts"
+  - "Other"
 
 database:
   path: "invoicesentinel.db"

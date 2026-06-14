@@ -63,10 +63,10 @@ def _parse_price_estimate_json(text: str) -> Dict[str, Any]:
     return parsed
 
 
-def compute_deviation_pct(unit_price: float, punto_medio: float) -> float:
-    if punto_medio == 0:
+def compute_deviation_pct(unit_price: float, midpoint: float) -> float:
+    if midpoint == 0:
         return 0.0
-    return (unit_price - punto_medio) / punto_medio * 100
+    return (unit_price - midpoint) / midpoint * 100
 
 
 def classify_severity(deviation_pct: float) -> str:
@@ -187,9 +187,9 @@ def reason_line_item(
             line_item.reference_source = ref_source
             return line_item, call
 
-        est_min = _safe_float(parsed.get("precio_min"))
-        est_max = _safe_float(parsed.get("precio_max"))
-        justification = parsed.get("justificacion", "")
+        est_min = _safe_float(parsed.get("min_price"))
+        est_max = _safe_float(parsed.get("max_price"))
+        justification = parsed.get("justification", "")
 
         if est_min is not None and est_max is not None:
             midpoint = (est_min + est_max) / 2
@@ -215,9 +215,9 @@ def reason_line_item(
         # Soft caveat for broad + extreme deviation (does NOT change severity)
         if ref_confidence == "broad" and abs(deviation_pct) > 1000:
             caveat = (
-                " [Nota: la comparación usa un rango de referencia genérico; "
-                "se recomienda verificar si existe un precio de referencia "
-                "más específico para este tipo de artículo.]"
+                " [Note: comparison uses a generic reference range; "
+                "we recommend checking whether a more specific reference "
+                "price exists for this type of item.]"
             )
             if line_item.justification:
                 line_item.justification += caveat
