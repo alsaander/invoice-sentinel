@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "quantity": 10,
+      "unit_price": 45.50,
+      "currency": "USD",
+      "description": "Taladro eléctrico inalámbrico 18V",
+      "category": "Electrónica"
+    },
+    {
+      "quantity": 200,
+      "unit_price": 2.30,
+      "currency": "USD",
+      "description": "Tornillo hexagonal M8 x 30mm acero inoxidable",
+      "category": "Materiales de construcción"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+Tu respuesta anterior no era un objeto JSON válido para el esquema de
+estimación de precio.
+
+Aquí está la información del ítem a evaluar nuevamente (SIN PRECIO FACTURADO):
+- Descripción: {description}
+- Categoría: {category}
+- Cantidad: {quantity}
+
+Responde de nuevo EXCLUSIVAMENTE con un objeto JSON (sin texto adicional, sin
+markdown, sin explicaciones) con este esquema exacto:
+
+{
+  "precio_min": <número o null>,
+  "precio_max": <número o null>,
+  "justificacion": "<2-4 oraciones>"
+}
+
+Haz tu mejor estimación independiente basada en conocimiento de mercado.
+Devuelve SOLO el objeto JSON válido, nada más.

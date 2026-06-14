@@ -1,0 +1,31 @@
+model:
+  name: "mistral:7b-instruct"
+  ollama_host: "http://localhost:11434"
+
+thresholds:
+  normal_upper: 100
+  moderate_upper: 200
+  grounding_min_score: 50
+
+paths:
+  inbox: "inbox"
+  processed: "processed"
+  review_high: "review/high"
+  review_moderate: "review/moderate"
+  review_extraction_failed: "review/extraction_failed"
+
+extraction:
+  min_text_chars: 50
+
+category_vocabulary:
+  - "Electrónica"
+  - "Materiales de construcción"
+  - "Textiles"
+  - "Maquinaria"
+  - "Alimentos"
+  - "Químicos"
+  - "Vehículos/Repuestos"
+  - "Otro"
+
+database:
+  path: "invoicesentinel.db"

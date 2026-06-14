@@ -1,0 +1,2 @@
+[console_scripts]
+invoicesentinel = invoicesentinel.cli:entry_point

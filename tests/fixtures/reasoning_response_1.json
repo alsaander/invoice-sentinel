@@ -1,0 +1,7 @@
+{
+  "precio_min": 30,
+  "precio_max": 80,
+  "punto_medio": 55,
+  "desviacion_significativa": true,
+  "justificacion": "El precio de 5000 USD por unidad para un taladro eléctrico inalámbrico de 18V es extremadamente alto. En el mercado internacional, estos taladros suelen costar entre 30 y 80 USD dependiendo de la marca y calidad. Un precio de 5000 USD representa una desviación de más del 9000% respecto al punto medio del rango estimado, lo cual es altamente sospechoso y consistente con sobrefacturación en TBML."
+}

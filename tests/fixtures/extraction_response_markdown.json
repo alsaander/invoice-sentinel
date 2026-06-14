@@ -1,0 +1,13 @@
+```json
+{
+  "items": [
+    {
+      "quantity": 20,
+      "unit_price": 35.0,
+      "currency": "USD",
+      "description": "Resistencia eléctrica 220V 1500W",
+      "category": "Electrónica"
+    }
+  ]
+}
+```

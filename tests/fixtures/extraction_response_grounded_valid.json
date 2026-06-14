@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "quantity": 50,
+      "unit_price": 8500.00,
+      "currency": "USD",
+      "description": "Taladro percutor inalambrico 20V profesional",
+      "category": "Electrónica"
+    },
+    {
+      "quantity": 200,
+      "unit_price": 250.00,
+      "currency": "USD",
+      "description": "Disco de corte diamantado 7",
+      "category": "Maquinaria"
+    }
+  ]
+}

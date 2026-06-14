@@ -1,0 +1,7 @@
+{
+  "precio_min": 40,
+  "precio_max": 70,
+  "punto_medio": 55,
+  "desviacion_significativa": false,
+  "justificacion": "El precio de 140 USD está por encima del rango típico de 40-70 USD para un taladro eléctrico inalámbrico. Representa una desviación significativa que justifica una revisión moderada."
+}

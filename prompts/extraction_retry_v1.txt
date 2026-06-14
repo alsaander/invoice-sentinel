@@ -1,0 +1,24 @@
+Tu respuesta anterior no era un objeto JSON válido para el esquema de extracción.
+
+Aquí está el texto original de la factura para que extraigas los datos:
+---
+{raw_text}
+---
+
+Responde de nuevo EXCLUSIVAMENTE con un objeto JSON (sin texto adicional, sin
+markdown, sin explicaciones) con este esquema exacto:
+
+{
+  "items": [
+    {
+      "quantity": <número o null>,
+      "unit_price": <número o null>,
+      "currency": "<código ISO 4217 o 'UNKNOWN'>",
+      "description": "<texto>",
+      "category": "<Electrónica | Materiales de construcción | Textiles | Maquinaria | Alimentos | Químicos | Vehículos/Repuestos | Otro>"
+    }
+  ]
+}
+
+Extrae SOLO los ítems que aparecen en el texto de la factura. No inventes nada.
+Devuelve SOLO el objeto JSON válido, nada más.
